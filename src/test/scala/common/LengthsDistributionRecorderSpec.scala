@@ -1,32 +1,32 @@
-//package edu.luc.etl.osdi.processtree.scala
-//package common
-//
-//import org.scalatest.WordSpec
-//
-///** Tests for the tree-building algorithm. */
-//trait LengthsDistributionRecorderSpec extends WordSpec with LengthsDistributionRecorder {
-//
-//  "The tree builder" when {
-//    "given an empty list of processes" should {
-//      "build the correct process tree" in {
-//        assert(recordLengths(Iterator.empty) == TreeFixtures.empty)
-//      }
-//    }
-//
-//    "given a simple list of processes" should {
-//      "build the correct process tree" in {
-//        val processes = Iterator((1, 0, "cmd"))
-//        assert(recordLengths(processes) == TreeFixtures.simple)
-//      }
-//    }
-//
-//    "given a complex list of processes" should {
-//      "build the correct process tree" in {
-//        val processes = Iterator(
-//          (1, 0, "cmd1"), (2, 1, "cmd2"), (3, 1, "cmd3"), (4, 3, "cmd4")
-//        )
-//        assert(recordLengths(processes) == TreeFixtures.complex)
-//      }
-//    }
-//  }
-//}
+package edu.luc.etl.osdi.processtree.scala
+package common
+
+import org.scalatest.WordSpec
+
+/** Tests for the lengths distribution recording algorithm. */
+trait LengthsDistributionRecorderSpec extends WordSpec with LengthsDistributionRecorder {
+
+  "The lengths distribution recorder" when {
+    "given an empty list of lines" should {
+      "record the correct lengths distribution" in {
+        assert(recordLengths(Iterator.empty) == LengthDistributionFixtures.empty)
+      }
+    }
+
+    "given a simple list of lines" should {
+      "record the correct lengths distribution" in {
+        val lines = Iterator("", "")
+        assert(recordLengths(lines) == LengthDistributionFixtures.simple)
+      }
+    }
+
+    "given a complex list of lines" should {
+      "record the correct lengths distribution" in {
+        val lines = Iterator(
+          "xxxxx", "xxxxx", "", "xx", "xxxxx", "", "xxxxx"
+        )
+        assert(recordLengths(lines) == LengthDistributionFixtures.complex)
+      }
+    }
+  }
+}

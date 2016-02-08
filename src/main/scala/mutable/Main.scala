@@ -4,7 +4,7 @@ package mutable
 /** A main app that combines the common code with the mutable implementation. */
 object Main extends common.Main with MutableLengthsDistributionRecorder
 
-/** A mutable (imperative) implementation of a process tree builder. */
+/** A mutable (imperative) implementation of a lengths distribution recorder. */
 trait MutableLengthsDistributionRecorder extends common.LengthsDistributionRecorder {
 
   import scala.collection.mutable.HashMap

@@ -6,14 +6,11 @@ package immutable
 object Main extends common.Main with ImmutableLengthsDistributionRecorder
 
 /**
- * An immutable (purely functional) implementation of a process tree builder
- * based on `foldLeft`. This is more space-efficient than groupBy because
- * it can work directly on consecutive items of the iterator.
+ * An immutable (purely functional) implementation of a lengths distribution recorder
  */
 trait ImmutableLengthsDistributionRecorder extends common.LengthsDistributionRecorder {
 
   override def recordLengths(lines: Iterator[String]): Map[Int, Int] = {
     lines.toSeq.map(_.length).groupBy(identity).mapValues(_.length)
-
   }
 }
