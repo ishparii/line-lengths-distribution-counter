@@ -8,28 +8,6 @@ import scala.math.max
 /** I/O methods for the console applications. */
 trait IO {
 
-  /**
-   * Parses the header row of the output of the ps command
-   * and returns a function that parses subsequent lines
-   * into a triple containing PID, PPID, and command string.
-   *
-   * @return The function for parsing subsequent lines
-   */
-  def parseLine(header: String): (String) => Process = {
-    val cols = new java.util.StringTokenizer(header).toList
-    val iPid = cols indexOf "PID"
-    val iPpid = cols indexOf "PPID"
-    val iCmd = max(header indexOf "CMD", header indexOf "COMMAND")
-    require(iPid >= 0, "required header field PID missing!")
-    require(iPpid >= 0, "required header field PPID missing!")
-    require(iCmd > max(iPid, iPpid), "required header field CMD or COMMAND missing or not last!")
-    (line: String) => {
-      val sTok = new java.util.StringTokenizer(line)
-      val words = (0 to max(iPid, iPpid)).map(_ => sTok.nextToken())
-      (words(iPid).toInt, words(iPpid).toInt, line.substring(iCmd))
-    }
-  }
-
   /** The buffer size for the output writer. */
   val IO_BUF_SIZE = 8192
 
@@ -37,23 +15,26 @@ trait IO {
   implicit val stdout = new BufferedWriter(new OutputStreamWriter(System.out), IO_BUF_SIZE)
 
   /** Prints a map representing a process tree. */
-  def printTree(processTree: ProcessTree)(implicit out: BufferedWriter): Unit = {
-    printTree(processTree, 0, 0)(out)
+  def printLengthsDistribution(lengthsDistribution: Map[Int, Int])(implicit out: BufferedWriter): Unit = {
+    if (lengthsDistribution.nonEmpty) {
+      val maxLength = lengthsDistribution.keysIterator.max
+      val numOfLines = lengthsDistribution.foldLeft(0)(_+_._2)
+      val indent = lengthsDistribution.valuesIterator.max
+
+      for (i <- 0 to maxLength) {
+        out.append(i + " ")
+        if (lengthsDistribution.contains(i)) {
+          out.append(" " * (indent - lengthsDistribution(i)))
+          out.append(lengthsDistribution(i) + " " + "*" * lengthsDistribution(i))
+        } else out.append(" " * indent + " 0")
+        out.newLine()
+      }
+
+      out.append("*" + " " * (indent + 2) + numOfLines)
+
+    } else out.append("* 0")
+
     out.flush()
   }
 
-  /** Recursively prints a map representing a process tree with indentation. */
-  def printTree
-  (processTree: ProcessTree, pid: Int, indent: Int)
-  (implicit out: BufferedWriter)
-  : Unit = {
-    for (children <- processTree.get(pid); (cpid, _, cmd) <- children) {
-      for (_ <- 1 to indent) out.append(' ')
-      out.append(cpid.toString)
-      out.append(": ")
-      out.append(cmd)
-      out.newLine()
-      printTree(processTree, cpid, indent + 1)(out)
-    }
-  }
 }
