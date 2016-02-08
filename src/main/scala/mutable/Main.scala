@@ -13,7 +13,7 @@ trait MutableLengthsDistributionRecorder extends common.LengthsDistributionRecor
     val lengthsDistributionMap = new HashMap[Int, Int]
 
     while (lines.hasNext) {
-      val length = lines.next().trim().length()
+      val length = lines.next().length()
       if (lengthsDistributionMap.contains(length)) {
         lengthsDistributionMap(length) += 1
       } else {
