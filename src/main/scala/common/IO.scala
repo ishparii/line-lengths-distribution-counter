@@ -19,7 +19,7 @@ trait IO {
       val maxLength = lengthsDistribution.keysIterator.max
       val numOfLines = lengthsDistribution.foldLeft(0)(_+_._2)
 
-      //for flash-right alignment
+      //for flush-right alignment
       val indent = lengthsDistribution.valuesIterator.max
 
       for (i <- 0 to maxLength) {
